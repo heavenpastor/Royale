@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.luojiahao.mapper.UserMapper">
+
+    <!--多对多查询-->
+    <resultMap id="resultMap2" type="user">
+        <id column="id" property="id"></id>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="birthday" property="birthday"></result>
+        <collection property="roleList" ofType="role">
+            <id column="rid" property="rid"></id>
+            <result column="role" property="role"></result>
+        </collection>
+    </resultMap>
+
+    <select id="findAllMap" resultMap="resultMap2">
+        SELECT * FROM USER u,user_role ur,role r WHERE u.`id`=ur.`userId` AND ur.`roleId` = r.`rid`
+    </select>
+
+
+
+    <!--CRUD-->
+    <select id="findAll" resultType="user">
+        SELECT * FROM test
+    </select>
+    <select id="findByDynamicSql" parameterType="user" resultType="user">
+        SELECT * FROM test
+        <where>
+            <if test="id!=0">
+                and id = #{id}
+            </if>
+            <if test="username!=null">
+                and username = #{username}
+            </if>
+            <if test="password!=null">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+    <delete id="delete" parameterType="int">
+      DELETE  FROM test WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="user">
+      UPDATE test SET username = #{username},password=#{password} where id =#{id}
+    </update>
+
+    <insert id="insert" parameterType="user">
+      INSERT into test VALUES (#{id},#{username},#{password})
+    </insert>
+</mapper>
